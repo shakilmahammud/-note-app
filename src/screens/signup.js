@@ -6,7 +6,7 @@ import Input from '../components/Input'
 import RadioText from '../components/RadioText'
 import {auth,db} from '../firebase/firebase'
 import {createUserWithEmailAndPassword } from "firebase/auth";
-import {addDoc,collection,setDocs,doc,onSnapshot,query,where} from 'firebase/firestore'
+import {addDoc,collection} from 'firebase/firestore'
 
 
 export default function SignUp() {
@@ -53,7 +53,7 @@ export default function SignUp() {
         <RadioText 
         text={option}
          key={i} 
-         setGender={setGender} 
+         setValue={setGender} 
          selected={selected}/>
       )
     })}

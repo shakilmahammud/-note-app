@@ -1,11 +1,11 @@
 import { View, Text,StyleSheet,Pressable } from 'react-native'
 
 
-export default function RadioText({text,selected,setGender}) {
+export default function RadioText({text,selected,setValue}) {
 
     
   return (
-    <Pressable style={styles.radionContainer} onPress={()=>setGender(text)}>
+    <Pressable style={styles.radionContainer} onPress={()=>setValue(text)}>
     <View style={[styles.outerCircle, selected && styles.selectedOuterCircle]}>
       <View style={[styles.innerCircle,selected && styles.selectedInnerCircle]}/>
     </View>
