@@ -1,5 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
+import React,{useState,useEffect} from 'react'
 import { NavigationContainer,DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Home from './src/screens/home'
@@ -7,6 +8,8 @@ import SignIn from './src/screens/signin'
 import Signup from './src/screens/signup'
 import Edit from './src/screens/edit'
 import Create from './src/screens/create'
+import {onAuthStateChanged} from 'firebase/auth'
+import {auth} from './src/firebase/firebase'
 
 
 
@@ -19,7 +22,17 @@ const AppTheme ={
   }
 }
 export default function App() {
-  const user = false;
+  const [user,setUser] = useState(null);
+  useEffect(()=>{
+    const authActive = onAuthStateChanged(auth,(user)=>{
+      if(user){
+        setUser(user)
+      }else{
+        setUser(false)
+      }
+    })
+    return authActive;
+  },[])
   return (
     
     <NavigationContainer >
@@ -27,7 +40,9 @@ export default function App() {
      <Stack.Navigator screenOptions={{headerShown:false}}>
    
      {user?(<>
-      <Stack.Screen name="Home" component={Home} />
+      <Stack.Screen name="Home" > 
+      {(props)=><Home {...props} user={user}/>}
+      </Stack.Screen>
      <Stack.Screen name="Create" component={Create} />
      <Stack.Screen name="Edit" component={Edit} />
      </>):(<>

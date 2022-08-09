@@ -1,13 +1,14 @@
-import { View, Text,SafeAreaView,TextInput,StyleSheet,Pressable } from 'react-native'
+import { View, Text,TextInput,StyleSheet,Pressable } from 'react-native'
 import React,{useState} from 'react'
+import { SafeAreaView } from 'react-native-safe-area-context';
 import Button from '../components/Button'
 import Input from '../components/Input'
 import RadioText from '../components/RadioText'
-import '../firebase/firebase'
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {auth,db} from '../firebase/firebase'
+import {createUserWithEmailAndPassword } from "firebase/auth";
+import {addDoc,collection,setDocs,doc,onSnapshot,query,where} from 'firebase/firestore'
 
 
-const auth = getAuth();
 export default function SignUp() {
 
   const options =['male','female']
@@ -22,7 +23,13 @@ export default function SignUp() {
       .then((userCredential) => {
         // Signed in 
         const user = userCredential.user;
-        console.log(user)
+        const addUserDb = addDoc(collection(db,'users'),{
+          name:name,
+          email:email,
+          age:age,
+          gender:gender,
+          uid:user.uid
+        })
         // ...
       })
       .catch((error) => {
