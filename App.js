@@ -10,8 +10,8 @@ import Edit from './src/screens/edit'
 import Create from './src/screens/create'
 import {onAuthStateChanged} from 'firebase/auth'
 import {auth} from './src/firebase/firebase'
-
-
+import { Provider } from 'react-redux'
+import {store} from './src/redux/store'
 
 const Stack = createNativeStackNavigator();
 const AppTheme ={
@@ -21,6 +21,7 @@ const AppTheme ={
     background:"#fff",
   }
 }
+
 export default function App() {
   const [user,setUser] = useState(null);
   useEffect(()=>{
@@ -34,7 +35,7 @@ export default function App() {
     return authActive;
   },[])
   return (
-    
+    <Provider store={store}>
     <NavigationContainer >
 
      <Stack.Navigator screenOptions={{headerShown:false}}>
@@ -54,7 +55,7 @@ export default function App() {
      </Stack.Navigator>
   
     </NavigationContainer>
-    
+    </Provider>
   );
 }
 

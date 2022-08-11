@@ -6,9 +6,18 @@ import Button from '../components/Button'
 import { AntDesign } from '@expo/vector-icons';
 import {auth,db} from '../firebase/firebase'
 import {collection,onSnapshot,query,where,deleteDoc,doc} from 'firebase/firestore'
+import { useSelector, useDispatch } from 'react-redux'
+import { decrement, increment,selectCount } from '../redux/counterSlice'
+import { toggleTheme,selectTheme } from '../redux/themeSlice'
 
 export default function Home({navigation,route,user}) {
   const [note,setNote] = useState([]);
+  const count = useSelector(selectCount)
+  const mode = useSelector(selectTheme)
+  const dispatch = useDispatch()
+
+  const bgColor = mode == 'light'?'white':'black';
+  const textColor = mode == 'light'? 'black' : 'white';
   useEffect(()=>{
     const noteQuery = query(collection(db,'notes'),where('uid','==',user.uid))
     const noteGet = onSnapshot(noteQuery,(notes)=>{
@@ -40,27 +49,32 @@ export default function Home({navigation,route,user}) {
       style={{position:'absolute',alignSelf:'flex-end',padding:20,zIndex:99}}
       onPress={()=>deleteDoc(doc(db,'notes',item.id))}
       >
-      <AntDesign name="delete" size={24} color="white" />
+      <AntDesign name="delete" size={24} color={textColor} />
       </Pressable>
-    <Text style={{color:'white',fontSize:24}}>{title}</Text>
-    <Text style={{color:'white',fontSize:14,marginTop:8}}>{description}</Text>
+    <Text style={{color:textColor,fontSize:24}}>{title}</Text>
+    <Text style={{color:textColor,fontSize:14,marginTop:8}}>{description}</Text>
     </Pressable>
   )
   }
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{backgroundColor:bgColor}}>
     <View style={{flexDirection:'row',justifyContent:'space-between',padding:20}}>
-      <Text>My Notes</Text>
+      <Text style={{color:textColor}}>My Notes {count} </Text>
       <Pressable onPress={create}>
-      <AntDesign name="pluscircleo" size={24} color="black" />
+      <AntDesign name="pluscircleo" size={24} color={textColor} />
       </Pressable>
     </View>
     <View >
-      <Text>home</Text>
+      <Text style={{color:textColor}}>home</Text>
       <Button title={"logout"} customStyles={{alignSelf:'center',marginBottom:40}}
        onPress={logout}
    />
     </View>
+    <Pressable onPress={() => dispatch(increment())} ><Text style={{color:textColor}}>InCrement</Text></Pressable>
+    <Pressable onPress={() => dispatch(decrement())} ><Text style={{color:textColor}}>DeCrement</Text></Pressable>
+    <Pressable onPress={() => dispatch(toggleTheme('dark'))}><Text style={{color:textColor}}>dark theme</Text></Pressable>
+    <Pressable onPress={() => dispatch(toggleTheme('light'))}><Text style={{color:textColor}}>light theme</Text></Pressable>
+    
     <View >
       <FlatList data={note} renderItem={renderItem} 
       keyExtractor={(item)=>item.title}
